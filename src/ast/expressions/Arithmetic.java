@@ -1,6 +1,4 @@
-package ast.Expressions;
-
-import com.sun.jdi.Location;
+package ast.expressions;
 
 public class Arithmetic extends AbstractExpression {
     Expression exp1;

@@ -1,4 +1,4 @@
-package ast.Expressions;
+package ast.expressions;
 
 import ast.AbstractLocatable;
 

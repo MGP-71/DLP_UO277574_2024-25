@@ -1,6 +1,6 @@
 package ast;
 
-public abstract class AbstractLocatable implements Locatable {
+public abstract class AbstractLocatable extends AbstractASTNode implements Locatable{
     int line;
     int column;
 
