@@ -4,10 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class While extends AbstractStatement{
-    List<Statement> stList;
+    private List<Statement> stList;
 
     public While(int line, int column, List<Statement> stList) {
         super(line, column);
         this.stList = new ArrayList<Statement>(stList);
+    }
+
+    public List<Statement> getStList() {
+        return new ArrayList<Statement>(stList);
     }
 }
