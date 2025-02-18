@@ -15,7 +15,7 @@ MULTIPLE_LINE_COMMENT: '"""' .*? '"""' -> skip
 ID: [_a-zA-Z] [_a-zA-Z0-9]*
     ;
 
-INT_CONSTANT: [0-9][1-9]*
+INT_CONSTANT: [1-9][0-9]*
     | '0'
     ;
 
