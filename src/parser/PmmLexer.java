@@ -1,5 +1,12 @@
-// Generated from E:/DLP/DLP_UO277574_2024-25/src/parser/Pmm.g4 by ANTLR 4.13.2
+// Generated from D:/DLP/DLP_UO277574_2024-25/src/parser/Pmm.g4 by ANTLR 4.13.2
 package parser;
+
+    import ast.*;
+    import ast.expressions.*;
+    import ast.statements.*;
+    import ast.program.*;
+    import ast.types.*;
+
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
@@ -51,8 +58,8 @@ public class PmmLexer extends Lexer {
 			null, "','", "':'", "';'", "'def'", "'('", "')'", "'->'", "'None'", "'{'", 
 			"'}'", "'main'", "'int'", "'double'", "'char'", "'['", "']'", "'struct'", 
 			"'print'", "'input'", "'='", "'if'", "'else'", "'while'", "'return'", 
-			"'&&'", "'||'", "'>'", "'>='", "'<'", "'<='", "'!='", "'=='", "'+'", 
-			"'-'", "'*'", "'/'", "'%'", "'!'", "'.'"
+			"'&&'", "'||'", "'>'", "'>='", "'<'", "'<='", "'!='", "'=='", "'*'", 
+			"'/'", "'%'", "'+'", "'-'", "'!'", "'.'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
@@ -262,11 +269,11 @@ public class PmmLexer extends Lexer {
 		"\u0000\u00ce\u00cf\u0005=\u0000\u0000\u00cf<\u0001\u0000\u0000\u0000\u00d0"+
 		"\u00d1\u0005!\u0000\u0000\u00d1\u00d2\u0005=\u0000\u0000\u00d2>\u0001"+
 		"\u0000\u0000\u0000\u00d3\u00d4\u0005=\u0000\u0000\u00d4\u00d5\u0005=\u0000"+
-		"\u0000\u00d5@\u0001\u0000\u0000\u0000\u00d6\u00d7\u0005+\u0000\u0000\u00d7"+
-		"B\u0001\u0000\u0000\u0000\u00d8\u00d9\u0005-\u0000\u0000\u00d9D\u0001"+
-		"\u0000\u0000\u0000\u00da\u00db\u0005*\u0000\u0000\u00dbF\u0001\u0000\u0000"+
-		"\u0000\u00dc\u00dd\u0005/\u0000\u0000\u00ddH\u0001\u0000\u0000\u0000\u00de"+
-		"\u00df\u0005%\u0000\u0000\u00dfJ\u0001\u0000\u0000\u0000\u00e0\u00e1\u0005"+
+		"\u0000\u00d5@\u0001\u0000\u0000\u0000\u00d6\u00d7\u0005*\u0000\u0000\u00d7"+
+		"B\u0001\u0000\u0000\u0000\u00d8\u00d9\u0005/\u0000\u0000\u00d9D\u0001"+
+		"\u0000\u0000\u0000\u00da\u00db\u0005%\u0000\u0000\u00dbF\u0001\u0000\u0000"+
+		"\u0000\u00dc\u00dd\u0005+\u0000\u0000\u00ddH\u0001\u0000\u0000\u0000\u00de"+
+		"\u00df\u0005-\u0000\u0000\u00dfJ\u0001\u0000\u0000\u0000\u00e0\u00e1\u0005"+
 		"!\u0000\u0000\u00e1L\u0001\u0000\u0000\u0000\u00e2\u00e3\u0005.\u0000"+
 		"\u0000\u00e3N\u0001\u0000\u0000\u0000\u00e4\u00e6\u0007\u0000\u0000\u0000"+
 		"\u00e5\u00e4\u0001\u0000\u0000\u0000\u00e6\u00e7\u0001\u0000\u0000\u0000"+
