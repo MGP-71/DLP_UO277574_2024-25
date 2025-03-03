@@ -23,4 +23,9 @@ public class Logical extends AbstractExpression{
     public String getOperator() {
         return operator;
     }
+
+    @Override
+    public String toString() {
+        return exp1 + " " + operator + " " + exp2;
+    }
 }

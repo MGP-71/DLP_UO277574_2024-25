@@ -19,4 +19,9 @@ public class Assigment extends AbstractStatement{
     public Expression getExp2() {
         return exp2;
     }
+
+    @Override
+    public String toString() {
+        return exp1 + "  = "  + exp2;
+    }
 }

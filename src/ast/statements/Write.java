@@ -13,4 +13,9 @@ public class Write extends AbstractStatement{
     public Expression getExp() {
         return exp;
     }
+
+    @Override
+    public String toString() {
+        return "print " + exp;
+    }
 }

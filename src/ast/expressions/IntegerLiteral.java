@@ -11,4 +11,9 @@ public class IntegerLiteral extends AbstractExpression{
     public int getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return String.valueOf(value);
+    }
 }

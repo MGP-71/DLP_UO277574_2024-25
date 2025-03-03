@@ -17,4 +17,9 @@ public class FieldAccess extends AbstractExpression{
     public String getField() {
         return field;
     }
+
+    @Override
+    public String toString() {
+        return exp + "." + field;
+    }
 }

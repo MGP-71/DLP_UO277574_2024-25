@@ -28,4 +28,25 @@ public class IfElse extends AbstractStatement{
     public List<Statement> getElseIf() {
         return new ArrayList<Statement>(elseIf);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder aux = new StringBuilder();
+        aux.append("if ").append(expression).append(" : {");
+        aux.append("\n");
+        for (Statement st: ifSt) {
+            aux.append(st.toString());
+            aux.append("\n");
+        }
+        aux.append("}");
+        if (!elseIf.isEmpty()) {
+            aux.append("\n" + "else {" + "\n");
+            for (Statement st: elseIf) {
+                aux.append(st.toString());
+                aux.append("\n");
+            }
+            aux.append("}");
+        }
+        return aux.toString();
+    }
 }

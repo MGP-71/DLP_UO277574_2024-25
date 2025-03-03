@@ -23,4 +23,22 @@ public class FunctionInvocation extends AbstractStatement implements Expression 
     public List<Expression> getListExp() {
         return new ArrayList<Expression>(listExp);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder aux = new StringBuilder();
+        aux.append(getName()).append(" (");
+        int cnt = 0;
+        for (Expression lxp: listExp) {
+            aux.append(lxp.toString());
+            aux.append(", ");
+            cnt++;
+        }
+        if (cnt>0) {
+            aux.deleteCharAt(aux.length()-1);
+            aux.deleteCharAt(aux.length()-1);
+        }
+        aux.append(")");
+        return aux.toString();
+    }
 }

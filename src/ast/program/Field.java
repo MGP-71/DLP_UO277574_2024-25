@@ -20,4 +20,9 @@ public class Field extends AbstractLocatable {
     public Type getFieldType() {
         return fieldType;
     }
+
+    @Override
+    public String toString() {
+        return fieldType + ": " + name;
+    }
 }

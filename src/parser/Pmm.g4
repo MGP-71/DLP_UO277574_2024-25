@@ -8,27 +8,52 @@ grammar Pmm;
     import ast.types.*;
 }
 
-program returns [Program ast]: definition* main_function EOF
+program returns [Program ast]
+        locals [List<Definition> dList = new ArrayList<Definition>()]:
+    (definition { $dList.addAll($definition.ast); })*
+        main_function { $dList.add($main_function.ast); } EOF
+        { $ast = new Program($dList); }
     ;
 
-definition: var_definition
-    | func_definition
+definition returns [List<Definition> ast  = new ArrayList<>()]:
+    var_definition { $ast.addAll($var_definition.ast); }
+    | func_definition { $ast.add($func_definition.ast); }
     ;
 
-var_definition: ID (',' ID)* ':' type ';'
+var_definition returns [List<VariableDefinition> ast  = new ArrayList<>()]
+    locals [List<Variable> vList = new ArrayList<Variable>()]:
+    id1=ID
+        { $vList.add(new Variable($id1.getLine(), $id1.getCharPositionInLine() + 1, $id1.text)); }
+        (',' id2=ID { $vList.add(new Variable($id2.getLine(), $id2.getCharPositionInLine() + 1, $id2.text)); })*
+        ':' type ';'
+        {
+            for (Variable vb: $vList) {
+                { $ast.add(new VariableDefinition(vb.getLine(), vb.getColumn(), vb.getName(), $type.ast)); }
+            }
+        }
     ;
 
-func_definition: 'def' ID '(' args ')' '->' (build_in_type|'None') ':' '{' var_definition* statement* '}'
+func_definition returns [FunctionDefinition ast]
+        locals [List<Statement> stList = new ArrayList<>()]:
+    d='def' id1=ID function_type '{'
+        (var_definition { $stList.addAll($var_definition.ast); })*
+        (statement { $stList.addAll($statement.ast); })* '}'
+        { $ast = new FunctionDefinition($d.getLine(), $d.getCharPositionInLine() + 1, $id1.text, $function_type.ast,
+        $stList); }
     ;
 
-main_function: 'def' 'main' '(' ')' '->' 'None' ':' '{' var_definition* statement* '}'
+main_function returns [FunctionDefinition ast]
+        locals [List<Statement> stList = new ArrayList<>()]:
+    d='def' m='main' function_type '{'
+        (var_definition { $stList.addAll($var_definition.ast); })*
+        (statement { $stList.addAll($statement.ast); })* '}'
+        { $ast = new FunctionDefinition($d.getLine(), $d.getCharPositionInLine() + 1, $m.text, $function_type.ast,
+                $stList); }
     ;
 
-args: (ID ':' type (',' ID ':' type)*)?
-    ;
-
-type returns [Type ast]: build_in_type
-    | complex_type
+type returns [Type ast]:
+    build_in_type { $ast = $build_in_type.ast; }
+    | complex_type { $ast = $complex_type.ast; }
     ;
 
 build_in_type returns [Type ast]:
@@ -42,27 +67,63 @@ complex_type returns [Type ast]:
     | 'struct' '{' fields '}' { $ast = new StructType($fields.ast); }
     ;
 
-fields returns [List<Field> ast  = new ArrayList<>()]:
-    (id1=ID { $ast.add( new Field($id1.getLine(), $id1.getCharPositionInLine() + 1, $id1.text, $type.ast)); }
-        (',' id2=ID {$ast.add( new Field($id2.getLine(), $id2.getCharPositionInLine() + 1, $id2.text, $type.ast));} )*
+function_type returns [FunctionType ast]
+        locals [List<VariableDefinition> vdList = new ArrayList<>()]:
+    d='(' (id1=ID ':' t1=type { $vdList.add(new VariableDefinition($d.getLine(),
+            $d.getCharPositionInLine() + 1, $id1.text, $t1.ast)); }
+            (',' id2=ID ':' t2=type { $vdList.add(new VariableDefinition($d.getLine(), $d.getCharPositionInLine() + 1,
+            $id2.text, $t2.ast)); })*)? ')' '->' type_of_func ':'
+            { $ast = new FunctionType($type_of_func.ast, $vdList); }
+    ;
+
+type_of_func returns [Type ast]:
+    'None' { $ast = new VoidType(); }
+    | build_in_type { $ast = $build_in_type.ast; }
+    ;
+
+fields returns [List<Field> ast  = new ArrayList<>()]
+        locals [List<Variable> vList = new ArrayList<Variable>()]:
+    (id1=ID  { $vList.add(new Variable($id1.getLine(), $id1.getCharPositionInLine() + 1, $id1.text)); }
+        (',' id2=ID  { $vList.add(new Variable($id2.getLine(), $id2.getCharPositionInLine() + 1, $id2.text)); } )*
         ':' type ';')*
+        {
+            for (Variable vb: $vList) {
+                { $ast.add(new Field(vb.getLine(), vb.getColumn(), vb.getName(), $type.ast)); }
+            }
+        }
     ;
 
-statement: 'print' expression (',' expression)* ';'
-    | 'input' expression (',' expression)* ';'
-    | expression '=' expression ';'
-    | 'if' expression ':' block ('else' ':' block)?
-    | 'while' expression ':' block
-    | 'return' expression ';'
+statement returns [List<Statement> ast = new ArrayList<>()]
+        locals [List<Statement> elseBody = new ArrayList<>()]:
+    p='print' e1=expression
+        { $ast.add(new Write($p.getLine(), $p.getCharPositionInLine() + 1, $e1.ast)); }
+        (',' e2=expression { $ast.add(new Write($p.getLine(), $p.getCharPositionInLine() + 1, $e2.ast)); })* ';'
+    | i='input' e1=expression
+        { $ast.add(new Read($i.getLine(), $i.getCharPositionInLine() + 1, $e1.ast)); }
+        (',' e2=expression { $ast.add(new Read($i.getLine(), $i.getCharPositionInLine() + 1, $e2.ast)); })* ';'
+    | e1=expression '=' e2=expression ';'
+        { $ast.add(new Assigment($e1.ast.getLine(), $e1.ast.getColumn(), $e1.ast, $e2.ast)); }
+    | i='if' expression ':' b1=block ('else' ':' b2=block { $elseBody.addAll($b2.ast); })?
+        { $ast.add(new IfElse($i.getLine(), $i.getCharPositionInLine() + 1, $expression.ast, $b1.ast, $elseBody)); }
+    | w='while' expression ':' block
+        { $ast.add(new While($w.getLine(), $w.getCharPositionInLine() + 1, $expression.ast, $block.ast)); }
+    | r='return' expression ';'
+        { $ast.add(new Return($r.getLine(), $r.getCharPositionInLine() + 1, $expression.ast)); }
     | func_invocation ';'
+        { $ast.add($func_invocation.ast); }
     ;
 
-func_invocation :
-    ID '(' (expression (',' expression)*)? ')'
+func_invocation returns [FunctionInvocation ast]
+        locals [List<Expression> params = new ArrayList<>()]:
+    ID '(' (expression { $params.add($expression.ast); }
+        (',' expression { $params.add($expression.ast); } )*)? ')'
+        { $ast = new FunctionInvocation($ID.getLine(), $ID.getCharPositionInLine() + 1,
+        new Variable($ID.getLine(), $ID.getCharPositionInLine() + 1, $ID.text), $params); }
     ;
 
-block: statement
-    | '{' statement* '}'
+block returns [List<Statement> ast  = new ArrayList<>()]:
+    statement { $ast.addAll($statement.ast); }
+    | '{' (statement { $ast.addAll($statement.ast); })* '}'
     ;
 
 expression returns [Expression ast]:
@@ -74,17 +135,17 @@ expression returns [Expression ast]:
         { $ast = new Arithmetic($e1.ast.getLine(), $e1.ast.getColumn(), $e1.ast, $e2.ast, $op.text); }
     | e1=expression op=('+'|'-') e2=expression
         { $ast = new Arithmetic($e1.ast.getLine(), $e1.ast.getColumn(), $e1.ast, $e2.ast, $op.text); }
-    | op='!' expression
-        { $ast = new UnaryNot($op.getLine(), $op.getCharPositionInLine() + 1, $expression.ast); }
-    | op='-' expression
-        { $ast = new UnaryMinus($op.getLine(), $op.getCharPositionInLine() + 1, $expression.ast); }
-    | op='(' type ')' expression
-        { $ast = new Cast($op.getLine(), $op.getCharPositionInLine() + 1, $expression.ast, $type.ast); }
-    | expression '.' ID
-        { $ast = new FieldAccess($expression.ast.getLine(), $expression.ast.getColumn(), $expression.ast, $ID.text); }
+    | op='!' e1=expression
+        { $ast = new UnaryNot($op.getLine(), $op.getCharPositionInLine() + 1, $e1.ast); }
+    | op='-' e1=expression
+        { $ast = new UnaryMinus($op.getLine(), $op.getCharPositionInLine() + 1, $e1.ast); }
+    | op='(' t=type ')' e1=expression
+        { $ast = new Cast($op.getLine(), $op.getCharPositionInLine() + 1, $e1.ast, $t.ast); }
+    | e1=expression '.' ID
+        { $ast = new FieldAccess($e1.ast.getLine(), $e1.ast.getColumn(), $e1.ast, $ID.text); }
     | e1=expression '[' e2=expression ']'
         { $ast = new ArrayAccess($e1.ast.getLine(), $e2.ast.getColumn(), $e1.ast, $e2.ast); }
-    | func_invocation
+    | func_invocation { $ast = $func_invocation.ast; }
     | ID { $ast = new Variable($ID.getLine(), $ID.getCharPositionInLine() + 1, $ID.text); }
     | INT_CONSTANT { $ast = new IntegerLiteral($INT_CONSTANT.getLine(), $INT_CONSTANT.getCharPositionInLine() + 1,
         LexerHelper.lexemeToInt($INT_CONSTANT.text)); }

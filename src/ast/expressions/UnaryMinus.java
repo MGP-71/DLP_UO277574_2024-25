@@ -11,4 +11,9 @@ public class UnaryMinus extends AbstractExpression{
     public Expression getExp() {
         return exp;
     }
+
+    @Override
+    public String toString() {
+        return "-" + exp;
+    }
 }

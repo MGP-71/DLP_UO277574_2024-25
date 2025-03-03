@@ -18,4 +18,9 @@ public class Cast extends AbstractExpression{
     public Type getType() {
         return type;
     }
+
+    @Override
+    public String toString() {
+        return "(" + type + ") " + exp;
+    }
 }

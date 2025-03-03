@@ -22,4 +22,17 @@ public class While extends AbstractStatement{
     public Expression getExp() {
         return exp;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder aux = new StringBuilder();
+        aux.append("while ").append(exp).append(" : {");
+        aux.append("\n");
+        for (Statement st: stList) {
+            aux.append(st.toString());
+            aux.append("\n");
+        }
+        aux.append("}");
+        return aux.toString();
+    }
 }

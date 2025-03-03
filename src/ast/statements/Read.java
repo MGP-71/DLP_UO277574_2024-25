@@ -13,4 +13,9 @@ public class Read extends AbstractStatement{
     public Expression getExp() {
         return exp;
     }
+
+    @Override
+    public String toString() {
+        return "input " + exp;
+    }
 }

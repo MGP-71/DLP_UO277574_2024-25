@@ -1,6 +1,7 @@
 package ast.types;
 
 import ast.program.VariableDefinition;
+import ast.statements.Statement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,5 +21,23 @@ public class FunctionType extends AbstractType{
 
     public List<VariableDefinition> getVariableDefinitions() {
         return new ArrayList<VariableDefinition>(variableDefinitions);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder aux = new StringBuilder();
+        aux.append("(");
+        int cnt= 0;
+        for (VariableDefinition vd: variableDefinitions) {
+            aux.append(vd.toString());
+            aux.append(", ");
+            cnt++;
+        }
+        if (cnt>0) {
+            aux.deleteCharAt(aux.length()-1);
+            aux.deleteCharAt(aux.length()-1);
+        }
+        aux.append(") -> ").append(returnType).append(": ");
+        return aux.toString();
     }
 }

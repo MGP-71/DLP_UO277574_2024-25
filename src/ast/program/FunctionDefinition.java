@@ -17,4 +17,17 @@ public class FunctionDefinition extends AbstractDefinition{
     public List<Statement> getStList() {
         return new ArrayList<Statement>(stList);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder aux = new StringBuilder();
+        aux.append("def ").append(getName()).append(getType()).append(" {");
+        aux.append("\n");
+        for (Statement st: stList) {
+            aux.append(st.toString());
+            aux.append("\n");
+        }
+        aux.append("}");
+        return aux.toString();
+    }
 }
