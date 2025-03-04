@@ -30,6 +30,13 @@ var_definition returns [List<VariableDefinition> ast  = new ArrayList<>()]
             for (Variable vb: $vList) {
                 { $ast.add(new VariableDefinition(vb.getLine(), vb.getColumn(), vb.getName(), $type.ast)); }
             }
+            for (int i = 0; i < $vList.size(); i++) {
+                for (int j = 0; j < $vList.size(); j++) {
+                    if ($vList.get(i).getName().equals($vList.get(j).getName()) && i!=j) {
+                        new ErrorType($vList.get(i), "Variable repetition '" + $vList.get(i).getName() + "'");
+                    }
+                }
+            }
         }
     ;
 
@@ -127,24 +134,25 @@ block returns [List<Statement> ast  = new ArrayList<>()]:
     ;
 
 expression returns [Expression ast]:
-    e1=expression op=('&&'|'||') e2=expression
-        { $ast = new Logical($e1.ast.getLine(), $e1.ast.getColumn(), $e1.ast, $e2.ast, $op.text); }
-    | e1=expression op=('>'|'>='|'<'|'<='|'!='|'==') e2=expression
-        { $ast = new Comparison($e1.ast.getLine(), $e1.ast.getColumn(), $e1.ast, $e2.ast, $op.text); }
-    | e1=expression op=('*'|'/'|'%') e2=expression
-        { $ast = new Arithmetic($e1.ast.getLine(), $e1.ast.getColumn(), $e1.ast, $e2.ast, $op.text); }
-    | e1=expression op=('+'|'-') e2=expression
-        { $ast = new Arithmetic($e1.ast.getLine(), $e1.ast.getColumn(), $e1.ast, $e2.ast, $op.text); }
-    | op='!' e1=expression
-        { $ast = new UnaryNot($op.getLine(), $op.getCharPositionInLine() + 1, $e1.ast); }
-    | op='-' e1=expression
-        { $ast = new UnaryMinus($op.getLine(), $op.getCharPositionInLine() + 1, $e1.ast); }
-    | op='(' t=type ')' e1=expression
-        { $ast = new Cast($op.getLine(), $op.getCharPositionInLine() + 1, $e1.ast, $t.ast); }
-    | e1=expression '.' ID
-        { $ast = new FieldAccess($e1.ast.getLine(), $e1.ast.getColumn(), $e1.ast, $ID.text); }
+    '(' e=expression ')' { $ast = $e.ast; }
     | e1=expression '[' e2=expression ']'
         { $ast = new ArrayAccess($e1.ast.getLine(), $e2.ast.getColumn(), $e1.ast, $e2.ast); }
+    | e1=expression '.' ID
+        { $ast = new FieldAccess($e1.ast.getLine(), $e1.ast.getColumn(), $e1.ast, $ID.text); }
+    | op='(' t=type ')' e1=expression
+        { $ast = new Cast($op.getLine(), $op.getCharPositionInLine() + 1, $e1.ast, $t.ast); }
+    | op='-' e1=expression
+        { $ast = new UnaryMinus($op.getLine(), $op.getCharPositionInLine() + 1, $e1.ast); }
+    | op='!' e1=expression
+        { $ast = new UnaryNot($op.getLine(), $op.getCharPositionInLine() + 1, $e1.ast); }
+    | e1=expression op=('*'|'/'|'%') e2=expression
+        { $ast = new Arithmetic($e1.ast.getLine(), $e1.ast.getColumn(), $e1.ast, $e2.ast, $op.text); }
+    | e1=expression op=('>'|'>='|'<'|'<='|'!='|'==') e2=expression
+        { $ast = new Comparison($e1.ast.getLine(), $e1.ast.getColumn(), $e1.ast, $e2.ast, $op.text); }
+    | e1=expression op=('&&'|'||') e2=expression
+        { $ast = new Logical($e1.ast.getLine(), $e1.ast.getColumn(), $e1.ast, $e2.ast, $op.text); }
+    | e1=expression op=('+'|'-') e2=expression
+        { $ast = new Arithmetic($e1.ast.getLine(), $e1.ast.getColumn(), $e1.ast, $e2.ast, $op.text); }
     | func_invocation { $ast = $func_invocation.ast; }
     | ID { $ast = new Variable($ID.getLine(), $ID.getCharPositionInLine() + 1, $ID.text); }
     | INT_CONSTANT { $ast = new IntegerLiteral($INT_CONSTANT.getLine(), $INT_CONSTANT.getCharPositionInLine() + 1,
