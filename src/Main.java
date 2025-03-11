@@ -1,12 +1,11 @@
+import org.antlr.v4.runtime.*;
+import introspector.model.IntrospectorModel;
+import introspector.view.IntrospectorView;
 import ast.ASTNode;
 import errorhandler.ErrorHandler;
 import parser.*;
-
-import org.antlr.v4.runtime.*;
-
-import ast.program.Program;
-import introspector.model.IntrospectorModel;
-import introspector.view.IntrospectorView;
+import semantic.TypeCheckingVisitor;
+import visitor.Visitor;
 
 public class Main {
 	
@@ -24,7 +23,10 @@ public class Main {
 		CommonTokenStream tokens = new CommonTokenStream(lexer); 
 		PmmParser parser = new PmmParser(tokens);	
 		ASTNode ast = parser.program().ast;
-		
+
+		Visitor typeCheckingVisitor = new TypeCheckingVisitor();
+		ast.accept(typeCheckingVisitor,null);
+
 		// * Check errors
 		if(ErrorHandler.getInstance().anyError()){
 			// * Show errors

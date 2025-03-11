@@ -1036,7 +1036,7 @@ public class PmmParser extends Parser {
 				((StatementContext)_localctx).e2 = expression(0);
 				setState(225);
 				match(T__2);
-				 _localctx.ast.add(new Assigment(((StatementContext)_localctx).e1.ast.getLine(), ((StatementContext)_localctx).e1.ast.getColumn(), ((StatementContext)_localctx).e1.ast, ((StatementContext)_localctx).e2.ast)); 
+				 _localctx.ast.add(new Assignment(((StatementContext)_localctx).e1.ast.getLine(), ((StatementContext)_localctx).e1.ast.getColumn(), ((StatementContext)_localctx).e1.ast, ((StatementContext)_localctx).e2.ast)); 
 				}
 				break;
 			case 4:

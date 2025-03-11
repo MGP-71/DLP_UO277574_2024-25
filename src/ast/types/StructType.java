@@ -5,6 +5,7 @@ import ast.Locatable;
 import ast.program.Field;
 import ast.program.VariableDefinition;
 import errorhandler.ErrorHandler;
+import visitor.Visitor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,4 +45,8 @@ public class StructType extends AbstractType{
         return aux.toString();
     }
 
+    @Override
+    public <TP, TR> TR accept(Visitor<TP, TR> v, TP param) {
+        return v.visit(this, param);
+    }
 }

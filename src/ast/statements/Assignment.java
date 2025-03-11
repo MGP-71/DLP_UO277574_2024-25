@@ -1,12 +1,14 @@
 package ast.statements;
 
 import ast.expressions.Expression;
+import ast.types.ErrorType;
+import visitor.Visitor;
 
-public class Assigment extends AbstractStatement{
+public class Assignment extends AbstractStatement{
     private Expression exp1;
     private Expression exp2;
 
-    public Assigment(int line, int column, Expression exp1, Expression exp2) {
+    public Assignment(int line, int column, Expression exp1, Expression exp2) {
         super(line, column);
         this.exp1 = exp1;
         this.exp2 = exp2;
@@ -23,5 +25,10 @@ public class Assigment extends AbstractStatement{
     @Override
     public String toString() {
         return exp1 + "  = "  + exp2;
+    }
+
+    @Override
+    public <TP, TR> TR accept(Visitor<TP, TR> v, TP param) {
+        return v.visit(this, param);
     }
 }

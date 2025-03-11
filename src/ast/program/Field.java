@@ -2,6 +2,7 @@ package ast.program;
 
 import ast.AbstractLocatable;
 import ast.types.Type;
+import visitor.Visitor;
 
 public class Field extends AbstractLocatable {
     private String name;
@@ -24,5 +25,10 @@ public class Field extends AbstractLocatable {
     @Override
     public String toString() {
         return fieldType + ": " + name;
+    }
+
+    @Override
+    public <TP, TR> TR accept(Visitor<TP, TR> v, TP param) {
+        return v.visit(this, param);
     }
 }

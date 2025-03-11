@@ -1,12 +1,14 @@
 package ast.statements;
 
+import ast.expressions.AbstractExpression;
 import ast.expressions.Expression;
 import ast.expressions.Variable;
+import visitor.Visitor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FunctionInvocation extends AbstractStatement implements Expression {
+public class FunctionInvocation extends AbstractExpression implements Statement {
     private Variable name;
     private List<Expression> listExp;
 
@@ -40,5 +42,10 @@ public class FunctionInvocation extends AbstractStatement implements Expression 
         }
         aux.append(")");
         return aux.toString();
+    }
+
+    @Override
+    public <TP, TR> TR accept(Visitor<TP, TR> v, TP param) {
+        return v.visit(this, param);
     }
 }

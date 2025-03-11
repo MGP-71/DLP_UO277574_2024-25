@@ -1,6 +1,7 @@
 package ast.statements;
 
 import ast.expressions.Expression;
+import visitor.Visitor;
 
 public class Return extends AbstractStatement{
     private Expression exp;
@@ -17,5 +18,10 @@ public class Return extends AbstractStatement{
     @Override
     public String toString() {
         return "return " + exp;
+    }
+
+    @Override
+    public <TP, TR> TR accept(Visitor<TP, TR> v, TP param) {
+        return v.visit(this, param);
     }
 }

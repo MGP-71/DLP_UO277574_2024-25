@@ -109,7 +109,7 @@ statement returns [List<Statement> ast = new ArrayList<>()]
         { $ast.add(new Read($i.getLine(), $i.getCharPositionInLine() + 1, $e1.ast)); }
         (',' e2=expression { $ast.add(new Read($i.getLine(), $i.getCharPositionInLine() + 1, $e2.ast)); })* ';'
     | e1=expression '=' e2=expression ';'
-        { $ast.add(new Assigment($e1.ast.getLine(), $e1.ast.getColumn(), $e1.ast, $e2.ast)); }
+        { $ast.add(new Assignment($e1.ast.getLine(), $e1.ast.getColumn(), $e1.ast, $e2.ast)); }
     | i='if' expression ':' b1=block ('else' ':' b2=block { $elseBody.addAll($b2.ast); })?
         { $ast.add(new IfElse($i.getLine(), $i.getCharPositionInLine() + 1, $expression.ast, $b1.ast, $elseBody)); }
     | w='while' expression ':' block
