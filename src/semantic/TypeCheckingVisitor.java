@@ -6,7 +6,7 @@ import ast.statements.*;
 import ast.types.*;
 import visitor.Visitor;
 
-public class TypeCheckingVisitor implements Visitor<Type, Boolean> {
+public class TypeCheckingVisitor extends AbstractVisitor<Type, Boolean> {
 
     @Override
     public Boolean visit(Arithmetic e, Type param) {
@@ -93,26 +93,6 @@ public class TypeCheckingVisitor implements Visitor<Type, Boolean> {
     }
 
     @Override
-    public Boolean visit(Field e, Type param) {
-        return null;
-    }
-
-    @Override
-    public Boolean visit(FunctionDefinition e, Type param) {
-        return null;
-    }
-
-    @Override
-    public Boolean visit(Program e, Type param) {
-        return null;
-    }
-
-    @Override
-    public Boolean visit(VariableDefinition e, Type param) {
-        return null;
-    }
-
-    @Override
     public Boolean visit(Assignment e, Type param) {
         e.getExp1().accept(this, param);
         e.getExp2().accept(this, param);
@@ -122,81 +102,10 @@ public class TypeCheckingVisitor implements Visitor<Type, Boolean> {
     }
 
     @Override
-    public Boolean visit(FunctionInvocation e, Type param) {
-        for(Expression exp: e.getListExp()) {
-            exp.accept(this, param);
-        }
-        return null;
-    }
-
-    @Override
-    public Boolean visit(IfElse e, Type param) {
-        e.getExpression().accept(this, param);
-        return null;
-    }
-
-    @Override
     public Boolean visit(Read e, Type param) {
         e.getExp().accept(this, param);
         if (!e.getExp().getLvalue())
             new ErrorType(e, "'" + e.getExp() + "'" + " is not l-value");
-        return null;
-    }
-
-    @Override
-    public Boolean visit(Return e, Type param) {
-        e.getExp().accept(this, param);
-        return null;
-    }
-
-    @Override
-    public Boolean visit(While e, Type param) {
-        return null;
-    }
-
-    @Override
-    public Boolean visit(Write e, Type param) {
-        e.getExp().accept(this, param);
-        return null;
-    }
-
-    @Override
-    public Boolean visit(ArrayType e, Type param) {
-        return null;
-    }
-
-    @Override
-    public Boolean visit(CharacterType e, Type param) {
-        return null;
-    }
-
-    @Override
-    public Boolean visit(DoubleType e, Type param) {
-        return null;
-    }
-
-    @Override
-    public Boolean visit(ErrorType e, Type param) {
-        return null;
-    }
-
-    @Override
-    public Boolean visit(FunctionType e, Type param) {
-        return null;
-    }
-
-    @Override
-    public Boolean visit(IntegerType e, Type param) {
-        return null;
-    }
-
-    @Override
-    public Boolean visit(StructType e, Type param) {
-        return null;
-    }
-
-    @Override
-    public Boolean visit(VoidType e, Type param) {
         return null;
     }
 }

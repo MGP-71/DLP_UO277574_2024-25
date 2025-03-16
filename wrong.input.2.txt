@@ -1,6 +1,6 @@
 # Lvalue required
 
-def main():{
+def main()-> None: {
 	i:int;	
 	input i+2;
 }
