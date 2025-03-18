@@ -1,6 +1,0 @@
-# Lvalue required
-
-def main()-> None: {
-	i:int;
-	(i+2) = 3;
-}

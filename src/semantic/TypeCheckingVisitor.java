@@ -1,10 +1,8 @@
 package semantic;
 
 import ast.expressions.*;
-import ast.program.*;
 import ast.statements.*;
 import ast.types.*;
-import visitor.Visitor;
 
 public class TypeCheckingVisitor extends AbstractVisitor<Type, Boolean> {
 
