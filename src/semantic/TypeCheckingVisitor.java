@@ -32,6 +32,7 @@ public class TypeCheckingVisitor extends AbstractVisitor<Type, Boolean> {
     @Override
     public Boolean visit(CharacterLiteral e, Type param) {
         e.setLValue(false);
+        e.setType(new CharacterType());
         return null;
     }
 
@@ -46,6 +47,7 @@ public class TypeCheckingVisitor extends AbstractVisitor<Type, Boolean> {
     @Override
     public Boolean visit(DoubleLiteral e, Type param) {
         e.setLValue(false);
+        e.setType(new DoubleType());
         return null;
     }
 
@@ -59,6 +61,7 @@ public class TypeCheckingVisitor extends AbstractVisitor<Type, Boolean> {
     @Override
     public Boolean visit(IntegerLiteral e, Type param) {
         e.setLValue(false);
+        e.setType(new IntegerType());
         return null;
     }
 
