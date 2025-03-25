@@ -21,3 +21,4 @@ ABSTRACT GRAMMAR
 
 RULES
 solo el typechecking
+(3)statement*.forEach(s -> s.)
