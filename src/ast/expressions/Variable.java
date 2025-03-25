@@ -1,9 +1,11 @@
 package ast.expressions;
 
+import ast.program.Definition;
 import visitor.Visitor;
 
 public class Variable extends AbstractExpression{
     private String name;
+    private Definition linkedDef;
 
     public Variable(int line, int column, String name) {
         super(line, column);
@@ -17,6 +19,14 @@ public class Variable extends AbstractExpression{
     @Override
     public String toString() {
         return name;
+    }
+
+    public Definition getLinkedDef() {
+        return linkedDef;
+    }
+
+    public void setLinkedDef(Definition linkedDef) {
+        this.linkedDef = linkedDef;
     }
 
     @Override
