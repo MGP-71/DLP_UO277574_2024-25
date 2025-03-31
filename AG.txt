@@ -12,13 +12,56 @@ ABSTRACT GRAMMAR
 (9) Assignment: statement -> expression1 expression2
 (10) FuncInvocation: statement -> variable expression*
 (11) FuncInvocation: expression -> variable expression*
-(12) Arithmetic: expression1 -> expression2 ('+'|'-'|'*'|'/'|'%') expression3
-(13) Comparison: expression1 -> expression2 ('>'|'>='|'<'|'<='|'!='|'==') expression3
-(14) Logical: expression1 -> expression2 ('&&'|'||') expression3
-(15) UnaryNot:
-(16) UnaryMinus:
-(17) Cast:
+(12) Arithmetic: expression1 -> expression2 expression3
+(13) Comparison: expression1 -> expression2 expression3
+(14) Logical: expression1 -> expression2 expression3
+(15) UnaryNot: expression1 -> expression2
+(16) UnaryMinus: expression1 -> expression2
+(17) Cast: expression1 -> type expression2
+(18) FieldAccess: expression1 -> expression2 ID
+(19) ArrayAccess: expression1 -> expression2 expression3
+(20) IntegerLiteral: expression -> INT_CONSTANT
+(21) DoubleLiteral: expression -> DOUBLE_CONSTANT
+(22) CharacterLiteral: expression -> CHAR_CONSTANT
+(23) Variable: expression -> ID
+(24) VoidType: type -> VOID_TYPE
+(25) FuncType: type -> vardefinition* type
+(26) StructType: type -> field*
+(27) Field: field -> ID type
+(28) DoubleType: type -> DOUBLE_TYPE
+(29) IntType: type -> INT_TYPE
+(30) CharType: type -> CHAR_TYPE
+(31) ArrayType: type -> INT_TYPE type
+
 
 RULES
-solo el typechecking
-(3)statement*.forEach(s -> s.)
+solo el type checking
+(3) statement*.forEach(s -> s.returnType=functype.getReturnType())
+(4) expression.getType().mustBeLogical()
+(5) expression.getType().mustBeBuiltIn()
+(6) expression.getType().mustBeBuiltIn()
+(7) expression.getType().mustBeLogical()
+(8) expression.getType().mustPromotesTo(statement.returnType)
+(9) expression2.getType().mustPromotesTo(expression3.getType())
+(10) variable.getType().parenthesis(expression*.getType())
+(11) variable.getType().parenthesis(expression*.getType())
+(12) expression2.getType().arithmetic(expression3.getType())
+(13) expression2.getType().comparison(expression3.getType())
+(14) expression2.getType().logic(expression3.getType())
+(15) expression2.getType().logic()
+(16) expression2.getType().arithmetic()
+(17) expression2.getType().canBeCastTo(type)
+(18) expression2.getType().dot(expression3.getType())
+(19) expression2.getType().squareBrackets(expression3.getType())
+(20) new IntegerType()
+(21) new DoubleType()
+(22) new CharacterType()
+(23) expression.getDefinition().getType()
+(24) new VoidType()
+(25) new FunctionType()
+(26) new StructType()
+(27) type
+(28) new DoubleType()
+(29) new CharType()
+(30) new CharType()
+(31) new ArrayType()

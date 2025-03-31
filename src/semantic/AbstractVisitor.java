@@ -89,6 +89,7 @@ public class AbstractVisitor<TP, TR> implements Visitor<TP, TR> {
         for(Statement st: e.getStList()) {
             st.accept(this, param);
         }
+        e.getType().accept(this, param);
         return null;
     }
 

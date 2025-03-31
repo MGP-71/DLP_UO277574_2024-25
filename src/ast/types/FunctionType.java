@@ -1,5 +1,6 @@
 package ast.types;
 
+import ast.Locatable;
 import ast.program.VariableDefinition;
 import ast.statements.Statement;
 import visitor.Visitor;
@@ -45,5 +46,35 @@ public class FunctionType extends AbstractType{
     @Override
     public <TP, TR> TR accept(Visitor<TP, TR> v, TP param) {
         return v.visit(this, param);
+    }
+
+    @Override
+    public void mustBeBuiltIn(Locatable l) {
+        if (returnType instanceof CharacterType  ||
+                returnType instanceof IntegerType  ||
+                returnType instanceof DoubleType) {
+            return;
+        }
+        new ErrorType(l, "The type " + returnType + " is not built-in");
+    }
+
+    @Override
+    public Type parenthesis(List<Type> list, Locatable l) {
+        if (returnType instanceof CharacterType ||
+                returnType instanceof IntegerType ||
+                returnType instanceof DoubleType ||
+                returnType instanceof VoidType) {
+            if (variableDefinitions.size() == list.size()) {
+                for (int i = 0; i < list.size(); i++) {
+                    if (!(list.get(i).getClass().equals(variableDefinitions.get(i).getType().getClass()))) {
+                        return new ErrorType(l, "The parameters do not have the same type as the arguments");
+
+                    }
+                }
+                return ((FunctionType) this).getReturnType();
+            }
+            return new ErrorType(l, "The number of parameters for the function is not correct");
+        }
+        return new ErrorType(l, "The return type must be built-in or void");
     }
 }

@@ -147,12 +147,12 @@ expression returns [Expression ast]:
         { $ast = new UnaryNot($op.getLine(), $op.getCharPositionInLine() + 1, $e1.ast); }
     | e1=expression op=('*'|'/'|'%') e2=expression
         { $ast = new Arithmetic($e1.ast.getLine(), $e1.ast.getColumn(), $e1.ast, $e2.ast, $op.text); }
+    | e1=expression op=('+'|'-') e2=expression
+        { $ast = new Arithmetic($e1.ast.getLine(), $e1.ast.getColumn(), $e1.ast, $e2.ast, $op.text); }
     | e1=expression op=('>'|'>='|'<'|'<='|'!='|'==') e2=expression
         { $ast = new Comparison($e1.ast.getLine(), $e1.ast.getColumn(), $e1.ast, $e2.ast, $op.text); }
     | e1=expression op=('&&'|'||') e2=expression
         { $ast = new Logical($e1.ast.getLine(), $e1.ast.getColumn(), $e1.ast, $e2.ast, $op.text); }
-    | e1=expression op=('+'|'-') e2=expression
-        { $ast = new Arithmetic($e1.ast.getLine(), $e1.ast.getColumn(), $e1.ast, $e2.ast, $op.text); }
     | func_invocation { $ast = $func_invocation.ast; }
     | ID { $ast = new Variable($ID.getLine(), $ID.getCharPositionInLine() + 1, $ID.text); }
     | INT_CONSTANT { $ast = new IntegerLiteral($INT_CONSTANT.getLine(), $INT_CONSTANT.getCharPositionInLine() + 1,

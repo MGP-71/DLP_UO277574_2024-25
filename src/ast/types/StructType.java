@@ -49,4 +49,13 @@ public class StructType extends AbstractType{
     public <TP, TR> TR accept(Visitor<TP, TR> v, TP param) {
         return v.visit(this, param);
     }
+
+    @Override
+    public Type dot(String name, Locatable l) {
+        for (Field f: fieldList) {
+            if (f.getName().equals(name))
+                return f.getFieldType();
+        }
+        return new ErrorType(l, "The field " + name + " is not in the struct");
+    }
 }

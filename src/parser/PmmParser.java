@@ -50,8 +50,8 @@ public class PmmParser extends Parser {
 			null, "','", "':'", "';'", "'def'", "'{'", "'}'", "'main'", "'int'", 
 			"'double'", "'char'", "'['", "']'", "'struct'", "'('", "')'", "'->'", 
 			"'None'", "'print'", "'input'", "'='", "'if'", "'else'", "'while'", "'return'", 
-			"'.'", "'-'", "'!'", "'*'", "'/'", "'%'", "'>'", "'>='", "'<'", "'<='", 
-			"'!='", "'=='", "'&&'", "'||'", "'+'"
+			"'.'", "'-'", "'!'", "'*'", "'/'", "'%'", "'+'", "'>'", "'>='", "'<'", 
+			"'<='", "'!='", "'=='", "'&&'", "'||'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
@@ -1454,7 +1454,7 @@ public class PmmParser extends Parser {
 						setState(330);
 						((ExpressionContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
-						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 135291469824L) != 0)) ) {
+						if ( !(_la==T__25 || _la==T__30) ) {
 							((ExpressionContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						}
 						else {
@@ -1464,7 +1464,7 @@ public class PmmParser extends Parser {
 						}
 						setState(331);
 						((ExpressionContext)_localctx).e2 = expression(9);
-						 ((ExpressionContext)_localctx).ast =  new Comparison(((ExpressionContext)_localctx).e1.ast.getLine(), ((ExpressionContext)_localctx).e1.ast.getColumn(), ((ExpressionContext)_localctx).e1.ast, ((ExpressionContext)_localctx).e2.ast, (((ExpressionContext)_localctx).op!=null?((ExpressionContext)_localctx).op.getText():null)); 
+						 ((ExpressionContext)_localctx).ast =  new Arithmetic(((ExpressionContext)_localctx).e1.ast.getLine(), ((ExpressionContext)_localctx).e1.ast.getColumn(), ((ExpressionContext)_localctx).e1.ast, ((ExpressionContext)_localctx).e2.ast, (((ExpressionContext)_localctx).op!=null?((ExpressionContext)_localctx).op.getText():null)); 
 						}
 						break;
 					case 3:
@@ -1477,7 +1477,7 @@ public class PmmParser extends Parser {
 						setState(335);
 						((ExpressionContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
-						if ( !(_la==T__36 || _la==T__37) ) {
+						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 270582939648L) != 0)) ) {
 							((ExpressionContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						}
 						else {
@@ -1487,7 +1487,7 @@ public class PmmParser extends Parser {
 						}
 						setState(336);
 						((ExpressionContext)_localctx).e2 = expression(8);
-						 ((ExpressionContext)_localctx).ast =  new Logical(((ExpressionContext)_localctx).e1.ast.getLine(), ((ExpressionContext)_localctx).e1.ast.getColumn(), ((ExpressionContext)_localctx).e1.ast, ((ExpressionContext)_localctx).e2.ast, (((ExpressionContext)_localctx).op!=null?((ExpressionContext)_localctx).op.getText():null)); 
+						 ((ExpressionContext)_localctx).ast =  new Comparison(((ExpressionContext)_localctx).e1.ast.getLine(), ((ExpressionContext)_localctx).e1.ast.getColumn(), ((ExpressionContext)_localctx).e1.ast, ((ExpressionContext)_localctx).e2.ast, (((ExpressionContext)_localctx).op!=null?((ExpressionContext)_localctx).op.getText():null)); 
 						}
 						break;
 					case 4:
@@ -1500,7 +1500,7 @@ public class PmmParser extends Parser {
 						setState(340);
 						((ExpressionContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
-						if ( !(_la==T__25 || _la==T__38) ) {
+						if ( !(_la==T__37 || _la==T__38) ) {
 							((ExpressionContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						}
 						else {
@@ -1510,7 +1510,7 @@ public class PmmParser extends Parser {
 						}
 						setState(341);
 						((ExpressionContext)_localctx).e2 = expression(7);
-						 ((ExpressionContext)_localctx).ast =  new Arithmetic(((ExpressionContext)_localctx).e1.ast.getLine(), ((ExpressionContext)_localctx).e1.ast.getColumn(), ((ExpressionContext)_localctx).e1.ast, ((ExpressionContext)_localctx).e2.ast, (((ExpressionContext)_localctx).op!=null?((ExpressionContext)_localctx).op.getText():null)); 
+						 ((ExpressionContext)_localctx).ast =  new Logical(((ExpressionContext)_localctx).e1.ast.getLine(), ((ExpressionContext)_localctx).e1.ast.getColumn(), ((ExpressionContext)_localctx).e1.ast, ((ExpressionContext)_localctx).e2.ast, (((ExpressionContext)_localctx).op!=null?((ExpressionContext)_localctx).op.getText():null)); 
 						}
 						break;
 					case 5:
@@ -1644,8 +1644,8 @@ public class PmmParser extends Parser {
 		"\u0001\u000e\u0001\u000e\u0001\u000e\u0001\u000e\u0005\u000e\u0163\b\u000e"+
 		"\n\u000e\f\u000e\u0166\t\u000e\u0001\u000e\u0000\u0001\u001c\u000f\u0000"+
 		"\u0002\u0004\u0006\b\n\f\u000e\u0010\u0012\u0014\u0016\u0018\u001a\u001c"+
-		"\u0000\u0004\u0001\u0000\u001c\u001e\u0001\u0000\u001f$\u0001\u0000%&"+
-		"\u0002\u0000\u001a\u001a\'\'\u0183\u0000#\u0001\u0000\u0000\u0000\u0002"+
+		"\u0000\u0004\u0001\u0000\u001c\u001e\u0002\u0000\u001a\u001a\u001f\u001f"+
+		"\u0001\u0000 %\u0001\u0000&\'\u0183\u0000#\u0001\u0000\u0000\u0000\u0002"+
 		"1\u0001\u0000\u0000\u0000\u00043\u0001\u0000\u0000\u0000\u0006B\u0001"+
 		"\u0000\u0000\u0000\bY\u0001\u0000\u0000\u0000\nv\u0001\u0000\u0000\u0000"+
 		"\f~\u0001\u0000\u0000\u0000\u000e\u008c\u0001\u0000\u0000\u0000\u0010"+

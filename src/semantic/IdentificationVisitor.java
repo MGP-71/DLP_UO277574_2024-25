@@ -13,7 +13,8 @@ public class IdentificationVisitor extends AbstractVisitor<Void, Void> {
     @Override
     public Void visit(Variable e, Void param) {
         if (st.find(e.getName()) == null)
-            new ErrorType(e, "Variable '" + e.getName() + "' not defined");
+            e.setLinkedDef(new VariableDefinition(e.getLine(), e.getColumn(), "error", new ErrorType(e,
+                    "Variable '" + e.getName() + "' not defined")));
         else
             e.setLinkedDef(st.find(e.getName()));
         return null;
