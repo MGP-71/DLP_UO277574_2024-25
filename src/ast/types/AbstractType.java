@@ -32,7 +32,7 @@ public abstract class AbstractType extends AbstractASTNode implements Type {
     @Override
     public Type logic(Locatable l) {
         return new ErrorType(l, "The type for the logical operation " +
-                this + "is not compatible");
+                this + " is not compatible");
     }
 
     @Override
@@ -44,6 +44,11 @@ public abstract class AbstractType extends AbstractASTNode implements Type {
     @Override
     public void mustBeBuiltIn(Locatable l) {
         new ErrorType(l, "The type " + this + " is not built-in");
+    }
+
+    @Override
+    public void mustBeBuiltInOrVoid(Locatable l) {
+        new ErrorType(l, "The type " + this + " is not built-in nor void");
     }
 
     @Override

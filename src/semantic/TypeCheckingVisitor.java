@@ -112,6 +112,7 @@ public class TypeCheckingVisitor extends AbstractVisitor<Type, Boolean> {
     @Override
     public Boolean visit(FunctionDefinition e, Type param) {
         Type returnType = ((FunctionType)e.getType()).getReturnType();
+        returnType.mustBeBuiltInOrVoid(e);
         for(Statement st: e.getStList()) {
             st.accept(this, returnType);
         }

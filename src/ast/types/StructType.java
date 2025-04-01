@@ -23,10 +23,14 @@ public class StructType extends AbstractType{
     }
 
     private void checkForRepetitions() {
+        List<String> caught = new ArrayList<String>();
         for (int i = 0; i < fieldList.size(); i++) {
             for (int j = 0; j < fieldList.size(); j++) {
-                if (fieldList.get(i).getName().equals(fieldList.get(j).getName()) && i!=j) {
-                    new ErrorType(fieldList.get(i), "Field repetition '" + fieldList.get(i).getName() + "'");
+                if (!caught.contains(fieldList.get(i).getName())) {
+                    if (fieldList.get(i).getName().equals(fieldList.get(j).getName()) && i!=j) {
+                        caught.add(fieldList.get(i).getName());
+                        new ErrorType(fieldList.get(i), "Field repetition '" + fieldList.get(i).getName() + "'");
+                    }
                 }
             }
         }

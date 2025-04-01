@@ -49,16 +49,6 @@ public class FunctionType extends AbstractType{
     }
 
     @Override
-    public void mustBeBuiltIn(Locatable l) {
-        if (returnType instanceof CharacterType  ||
-                returnType instanceof IntegerType  ||
-                returnType instanceof DoubleType) {
-            return;
-        }
-        new ErrorType(l, "The type " + returnType + " is not built-in");
-    }
-
-    @Override
     public Type parenthesis(List<Type> list, Locatable l) {
         if (returnType instanceof CharacterType ||
                 returnType instanceof IntegerType ||

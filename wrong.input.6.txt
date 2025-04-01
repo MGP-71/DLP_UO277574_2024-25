@@ -1,0 +1,86 @@
+int f1() {
+	return; // Error
+}
+
+void f2() {
+	return 1; // Error
+}
+
+int[] f3() {} // error
+
+int f4(int a, double b) {
+	return 1.2; // error
+}
+
+void main() {
+	int [10][10] arr;
+	struct st {
+		int a;
+		struct [10] b {
+			int b;
+		};
+	};
+	int a
+	double b;
+	char c;
+	
+	arr[0] = 1; // Error
+	arr[0][0] = 1;
+	arr[0][0][0] = 1; // Error
+	a[0] = 1 // Error
+	
+	a.a = 1; // Error
+	st.a = 1;
+	st.x = 1; // Error
+	st.b[0].b = 1;
+	
+	a = 'a'; // Error
+	a = 1;
+	a = 1.2; // Error;
+	b = 1; // Error
+	
+	a = 1 < 2;
+	a = 1 < b; // Error;
+	a = b < 1.2;
+	a = 'a' < 'b';
+	a = 'a' < 1; // Error;
+	
+	a = -1;
+	a = -'a'; // Error;
+	b = -1.4; 
+	
+	a = !a;
+	a = !b; // Error;
+	a = !'a'; // Error
+	
+	a = a && b; // Error
+	a = a && 1;
+	a = 'a' && a; // Error
+	
+	if (b) {} // Error
+	while (b) {} // Error
+	if (a) {}
+	while (a) {}
+	
+	print 'a';
+	print arr; // Error 
+	print st; // Error
+	print 1;
+	print 1.2;
+	
+	input c;
+	input arr; // Error 
+	input st; // Error
+	input a;
+	input b;
+	
+	print f1();
+	print f2(); // Error
+	f1();
+	f4(1); // Error
+	f4(1, 1.2);
+	f4(1, 1.2, 2); // Error
+	a = f4(1); // Error
+	a = f4(1, 1.2);
+	a = f4(1, 1.2, 2); // Error	
+}

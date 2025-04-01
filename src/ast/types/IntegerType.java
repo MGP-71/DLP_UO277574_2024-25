@@ -51,13 +51,18 @@ public class IntegerType extends AbstractType{
 
     @Override
     public void mustPromotesTo(Type t, Locatable l) {
-        if (t instanceof IntegerType)
+        if (t instanceof IntegerType || t instanceof ErrorType)
             return;
         new ErrorType(l, "Cannot promote to with types integer and " + t);
     }
 
     @Override
     public void mustBeBuiltIn(Locatable l) {
+        return;
+    }
+
+    @Override
+    public void mustBeBuiltInOrVoid(Locatable l) {
         return;
     }
 

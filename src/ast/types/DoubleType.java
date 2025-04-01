@@ -49,6 +49,11 @@ public class DoubleType extends AbstractType{
     }
 
     @Override
+    public void mustBeBuiltInOrVoid(Locatable l) {
+        return;
+    }
+
+    @Override
     public Type canBeCastTo(Type t, Locatable l) {
         return this;
     }
