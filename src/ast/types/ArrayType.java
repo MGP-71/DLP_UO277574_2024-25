@@ -32,8 +32,13 @@ public class ArrayType extends AbstractType{
 
     @Override
     public Type squareBrackets(Type t, Locatable l) {
-        if (t instanceof IntegerType)
+        if (t instanceof IntegerType || t instanceof ErrorType)
             return this.getTypeOf();
         return new ErrorType(l, "The type " + t + "is not a valid type to follow an array");
+    }
+
+    @Override
+    public int numberOfBytes() {
+        return size * typeOf.numberOfBytes();
     }
 }

@@ -19,7 +19,7 @@ public class IntegerType extends AbstractType{
 
     @Override
     public Type arithmetic(Type type, Locatable l) {
-        if (type instanceof IntegerType)
+        if (type instanceof IntegerType || type instanceof ErrorType)
             return new IntegerType();
         return new ErrorType(l, "Cannot do arithmetic operation with types double and " + type);
     }
@@ -31,14 +31,14 @@ public class IntegerType extends AbstractType{
 
     @Override
     public Type comparison(Type type, Locatable l) {
-        if (type instanceof IntegerType)
+        if (type instanceof IntegerType || type instanceof ErrorType)
             return this;
         return new ErrorType(l, "Cannot do comparison operation with types character and " + type);
     }
 
     @Override
     public Type logic(Type t, Locatable l) {
-        if (t instanceof IntegerType) {
+        if (t instanceof IntegerType || t instanceof ErrorType) {
             return this;
         }
         return new ErrorType(l, "Cannot do logical operation with types character and " + t);
@@ -62,11 +62,6 @@ public class IntegerType extends AbstractType{
     }
 
     @Override
-    public void mustBeBuiltInOrVoid(Locatable l) {
-        return;
-    }
-
-    @Override
     public void mustBeLogical(Locatable l) {
         return;
     }
@@ -74,5 +69,10 @@ public class IntegerType extends AbstractType{
     @Override
     public Type canBeCastTo(Type t, Locatable l) {
         return this;
+    }
+
+    @Override
+    public int numberOfBytes() {
+        return 2;
     }
 }

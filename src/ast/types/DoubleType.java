@@ -20,7 +20,7 @@ public class DoubleType extends AbstractType{
 
     @Override
     public Type arithmetic(Type type, Locatable l) {
-        if (type instanceof DoubleType)
+        if (type instanceof DoubleType || type instanceof ErrorType)
             return new DoubleType();
         return new ErrorType(l, "Cannot do arithmetic operation with types double and " + type);
     }
@@ -31,14 +31,14 @@ public class DoubleType extends AbstractType{
     }
     @Override
     public Type comparison(Type type, Locatable l) {
-        if (type instanceof DoubleType)
+        if (type instanceof DoubleType || type instanceof ErrorType)
             return this;
         return new ErrorType(l, "Cannot do comparison operation with types character and " + type);
     }
 
     @Override
     public void mustPromotesTo(Type t, Locatable l) {
-        if (t instanceof DoubleType)
+        if (t instanceof DoubleType || t instanceof ErrorType)
             return;
         new ErrorType(l, "Cannot promote to with types double and " + t);
     }
@@ -49,12 +49,12 @@ public class DoubleType extends AbstractType{
     }
 
     @Override
-    public void mustBeBuiltInOrVoid(Locatable l) {
-        return;
+    public Type canBeCastTo(Type t, Locatable l) {
+        return this;
     }
 
     @Override
-    public Type canBeCastTo(Type t, Locatable l) {
-        return this;
+    public int numberOfBytes() {
+        return 4;
     }
 }

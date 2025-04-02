@@ -2,6 +2,7 @@ package semantic;
 
 import ast.expressions.*;
 import ast.program.FunctionDefinition;
+import ast.program.VariableDefinition;
 import ast.statements.*;
 import ast.types.*;
 
@@ -112,7 +113,8 @@ public class TypeCheckingVisitor extends AbstractVisitor<Type, Boolean> {
     @Override
     public Boolean visit(FunctionDefinition e, Type param) {
         Type returnType = ((FunctionType)e.getType()).getReturnType();
-        returnType.mustBeBuiltInOrVoid(e);
+        if(!(returnType instanceof VoidType))
+            returnType.mustBeBuiltIn(e);
         for(Statement st: e.getStList()) {
             st.accept(this, returnType);
         }
@@ -187,6 +189,15 @@ public class TypeCheckingVisitor extends AbstractVisitor<Type, Boolean> {
     public Boolean visit(Write e, Type param) {
         e.getExp().accept(this, param);
         e.getExp().getType().mustBeBuiltIn(e);
+        return null;
+    }
+
+    @Override
+    public Boolean visit(FunctionType e, Type param) {
+        for(VariableDefinition vd : e.getVariableDefinitions()) {
+            vd.accept(this, param);
+            vd.getType().mustBeBuiltIn(vd);
+        }
         return null;
     }
 }

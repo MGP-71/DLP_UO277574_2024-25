@@ -92,12 +92,16 @@ fields returns [List<Field> ast  = new ArrayList<>()]
         locals [List<Variable> vList = new ArrayList<Variable>()]:
     (id1=ID  { $vList.add(new Variable($id1.getLine(), $id1.getCharPositionInLine() + 1, $id1.text)); }
         (',' id2=ID  { $vList.add(new Variable($id2.getLine(), $id2.getCharPositionInLine() + 1, $id2.text)); } )*
-        ':' type ';')*
+        ':' type ';'
         {
             for (Variable vb: $vList) {
                 { $ast.add(new Field(vb.getLine(), vb.getColumn(), vb.getName(), $type.ast)); }
             }
         }
+        {
+            $vList = new ArrayList<Variable>();
+        }
+        )*
     ;
 
 statement returns [List<Statement> ast = new ArrayList<>()]

@@ -20,7 +20,7 @@ public class CharacterType extends AbstractType{
 
     @Override
     public Type arithmetic(Type type, Locatable l) {
-        if (type instanceof CharacterType)
+        if (type instanceof CharacterType || type instanceof ErrorType)
             return new IntegerType();
         return new ErrorType(l, "Cannot do arithmetic operation with types character and " + type);
     }
@@ -32,14 +32,14 @@ public class CharacterType extends AbstractType{
 
     @Override
     public Type comparison(Type type, Locatable l) {
-        if (type instanceof CharacterType)
+        if (type instanceof CharacterType || type instanceof ErrorType)
             return this;
         return new ErrorType(l, "Cannot do comparison operation with types character and " + type);
     }
 
     @Override
     public void mustPromotesTo(Type t, Locatable l) {
-        if (t instanceof CharacterType)
+        if (t instanceof CharacterType || t instanceof ErrorType)
             return;
         new ErrorType(l, "Cannot promote to with types character and " + t);
     }
@@ -50,12 +50,12 @@ public class CharacterType extends AbstractType{
     }
 
     @Override
-    public void mustBeBuiltInOrVoid(Locatable l) {
-        return;
+    public Type canBeCastTo(Type t, Locatable l) {
+        return this;
     }
 
     @Override
-    public Type canBeCastTo(Type t, Locatable l) {
-        return this;
+    public int numberOfBytes() {
+        return 1;
     }
 }

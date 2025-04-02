@@ -17,7 +17,7 @@ public class VoidType extends AbstractType{
     }
 
     @Override
-    public void mustBeBuiltInOrVoid(Locatable l) {
-        return;
+    public int numberOfBytes() {
+        return 0;
     }
 }

@@ -1,0 +1,13 @@
+ATTRIBUTE GRAMMAR
+
+ABSTRACT GRAMMAR
+(2) VarDefinition: vardefinition -> ID type
+(3) FuncDefinition: funcdefinition ->  ID functype statement*
+(25) FuncType: type -> vardefinition* type
+(26) StructType: type -> field*
+
+RULES
+(1) &global=ΣnOB(types(prev. globals not including itself))
+(2) &local=BP-ΣnOB(types(prev. locals including itself))
+(3) &param = BP + 4 + ΣnOB(types(params on the right not including itself))
+(4) &field=ΣnOB(types(prev. fields not including itself))

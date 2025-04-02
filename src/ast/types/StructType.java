@@ -62,4 +62,13 @@ public class StructType extends AbstractType{
         }
         return new ErrorType(l, "The field " + name + " is not in the struct");
     }
+
+    @Override
+    public int numberOfBytes() {
+        int total = 0;
+        for(Field f: fieldList) {
+            total += f.getFieldType().numberOfBytes();
+        }
+        return total;
+    }
 }
