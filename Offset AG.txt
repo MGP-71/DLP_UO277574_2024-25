@@ -1,13 +1,36 @@
 ATTRIBUTE GRAMMAR
 
-ABSTRACT GRAMMAR
+ABSTRACT GRAMMAR (G)
 (2) VarDefinition: vardefinition -> ID type
 (3) FuncDefinition: funcdefinition ->  ID functype statement*
 (25) FuncType: type -> vardefinition* type
 (26) StructType: type -> field*
 
-RULES
-(1) &global=ΣnOB(types(prev. globals not including itself))
-(2) &local=BP-ΣnOB(types(prev. locals including itself))
-(3) &param = BP + 4 + ΣnOB(types(params on the right not including itself))
-(4) &field=ΣnOB(types(prev. fields not including itself))
+ATTRIBUTES (A)
+vardefinition.scope
+vardefinition.offset
+field.offset
+type.numberOfBytes
+
+RULES (R)
+(2) if (vardefinition.scope == 0) {
+        vardefinition.offset = globalByteSum;
+        globalByteSum += type.numberOfBytes;
+    }
+(3) int localsByteSum = 0;
+        for (Statement st: statement*) {
+            if (st instanceof VariableDefinition) {
+                localsByteSum += ((VariableDefinition) st).getType().numberOfBytes;
+                 ((VariableDefinition) st).offset=-localsByteSum;
+            }
+        }
+(25) int paramsByteSum = 0;
+     for (int i = vardefinition*.size() - 1; i >= 0; i--) {
+        vardefinition*.get(i).offset=4+paramsByteSum;
+        paramsByteSum += vardefinition*.get(i).type.numberOfBytes;
+     }
+(26) int fieldsByteSum = 0;
+     for (Field f: field*) {
+        f.offset=fieldsByteSum;
+        fieldsByteSum += f.getFieldType().numberOfBytes;
+     }
