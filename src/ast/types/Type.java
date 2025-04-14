@@ -19,4 +19,5 @@ public interface Type extends ASTNode {
     Type parenthesis(List<Type> list, Locatable l); //FuncInvocation
 
     int numberOfBytes();
+    char suffix();
 }

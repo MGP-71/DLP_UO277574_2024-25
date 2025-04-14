@@ -7,10 +7,10 @@ ABSTRACT GRAMMAR (G)
 (26) StructType: type -> field*
 
 ATTRIBUTES (A)
-vardefinition.scope
-vardefinition.offset
-field.offset
-type.numberOfBytes
+vardefinition.scope = Int
+vardefinition.offset = Int
+field.offset = Int
+type.numberOfBytes = Int
 
 RULES (R)
 (2) if (vardefinition.scope == 0) {
