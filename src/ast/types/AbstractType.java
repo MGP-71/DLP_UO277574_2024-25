@@ -2,6 +2,8 @@ package ast.types;
 
 import ast.AbstractASTNode;
 import ast.Locatable;
+import codegenerator.CodeGenerator;
+
 import java.util.List;
 
 public abstract class AbstractType extends AbstractASTNode implements Type {
@@ -90,6 +92,11 @@ public abstract class AbstractType extends AbstractASTNode implements Type {
 
     @Override
     public char suffix() {
+        throw new IllegalStateException();
+    }
+
+    @Override
+    public void convertTo(CodeGenerator cg, Type type){
         throw new IllegalStateException();
     }
 }

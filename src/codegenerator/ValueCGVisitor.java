@@ -2,6 +2,8 @@ package codegenerator;
 
 import ast.expressions.*;
 import ast.statements.FunctionInvocation;
+import ast.types.DoubleType;
+import ast.types.IntegerType;
 import ast.types.Type;
 
 public class ValueCGVisitor extends AbstractCGVisitor<Void, Void>{
@@ -14,9 +16,7 @@ public class ValueCGVisitor extends AbstractCGVisitor<Void, Void>{
     /*
     value[[Arithmetic: expression1 ⟶ expression2 (+|-|*|/) expression3]] =
         value[[expression2]]
-        expression2.type.convertTo(expression1)
         value[[expression3]]
-        expression3.type.convertTo(expression1)
         switch (expression1.operator) {
             case "+": <add> expression1.suffix
                 break;
@@ -32,9 +32,7 @@ public class ValueCGVisitor extends AbstractCGVisitor<Void, Void>{
     @Override
     public Void visit(Arithmetic e, Void param) {
         e.getExp1().accept(this, null);
-        e.getExp1().getType().convertTo(cg, e.getType());
         e.getExp2().accept(this, null);
-        e.getExp2().getType().convertTo(cg, e.getType());
 
         switch (e.getOperator()){
             case "+":
@@ -81,47 +79,40 @@ public class ValueCGVisitor extends AbstractCGVisitor<Void, Void>{
 
     /*
     value[[Comparison: expression1 ⟶ expression2 ( > | < | >= | <= | == | != ) expression3]] =
-        Type highestType = expression2.type.highestType(expression3.type)
         value[[expression2]]
-        expression2.type.convertTo(highestType)
         value[[expression3]]
-        expression3.type.convertTo(highestType)
         switch (operator) {
-            case ">": <gt> highestType.suffix
+            case ">": <gt> expression1.suffix
                 break;
-            case "<": <lt> highestType.suffix
+            case "<": <lt> expression1.suffix
                 break;
-            case ">=": <ge> highestType.suffix
+            case ">=": <ge> expression1.suffix
                 break;
-            case "<=": <le> highestType.suffix
+            case "<=": <le> expression1.suffix
                 break;
-            case "==": <eq> highestType.suffix
+            case "==": <eq> expression1.suffix
                 break;
-            case "!=": <ne> highestType.suffix
+            case "!=": <ne> expression1.suffix
                 break;
         }
      */
     @Override
     public Void visit(Comparison e, Void param) {
-        Type highestType = e.getExp1().getType().highestType(e.getExp2().getType());
         e.getExp1().accept(this, null);
-        e.getExp1().getType().convertTo(cg, highestType);
         e.getExp2().accept(this, null);
-        e.getExp2().getType().convertTo(cg, highestType);
-
 
         switch (e.getOperator()) {
-            case ">": cg.gt(highestType.suffix());
+            case ">": cg.gt(e.getType().suffix());
                 break;
-            case "<": cg.lt(highestType.suffix());
+            case "<": cg.lt(e.getType().suffix());
                 break;
-            case ">=": cg.ge(highestType.suffix());
+            case ">=": cg.ge(e.getType().suffix());
                 break;
-            case "<=": cg.le(highestType.suffix());
+            case "<=": cg.le(e.getType().suffix());
                 break;
-            case "==": cg.eq(highestType.suffix());
+            case "==": cg.eq(e.getType().suffix());
                 break;
-            case "!=": cg.ne(highestType.suffix());
+            case "!=": cg.ne(e.getType().suffix());
                 break;
 
         }
@@ -182,9 +173,23 @@ public class ValueCGVisitor extends AbstractCGVisitor<Void, Void>{
         return null;
     }
 
+    /*
+    value[[UnaryMinus: exp1 ⟶ exp2]] =
+        value[[exp1]]
+        <push> exp1.type.suffix -1
+        <mul> expression1.suffix
+    */
     @Override
     public Void visit(UnaryMinus e, Void param) {
-        return super.visit(e, param);
+        e.getExp().accept(this, param);
+        if (e.getType() instanceof IntegerType) {
+            cg.push(-1);
+        } else if (e.getType() instanceof DoubleType) {
+            cg.pushf(-1);
+        }
+        cg.mul(e.getType());
+
+        return null;
     }
 
     /*
@@ -194,7 +199,10 @@ public class ValueCGVisitor extends AbstractCGVisitor<Void, Void>{
     */
     @Override
     public Void visit(UnaryNot e, Void param) {
-        return super.visit(e, param);
+        e.getExp().accept(this, param);
+        cg.not();
+
+        return null;
     }
 
     /*

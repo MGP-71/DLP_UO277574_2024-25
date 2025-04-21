@@ -32,7 +32,6 @@ public class AddressCGVisitor extends AbstractCGVisitor<Void, Void> {
             <pusha > exp.def.offset
             <addi >
         }
-        push exp.suffix + exp.definition.offset
      */
     @Override
     public Void visit(Variable e, Void param) {

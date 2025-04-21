@@ -1,6 +1,7 @@
 package ast.types;
 
 import ast.Locatable;
+import codegenerator.CodeGenerator;
 import visitor.Visitor;
 
 public class IntegerType extends AbstractType{
@@ -79,5 +80,13 @@ public class IntegerType extends AbstractType{
     @Override
     public char suffix() {
         return 'i';
+    }
+
+    @Override
+    public void convertTo(CodeGenerator codeGenerator, Type type){
+        if(type instanceof DoubleType)
+            codeGenerator.i2f();
+        else if(type instanceof CharacterType)
+            codeGenerator.i2b();
     }
 }

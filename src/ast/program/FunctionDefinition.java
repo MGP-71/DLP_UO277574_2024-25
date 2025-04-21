@@ -9,6 +9,7 @@ import java.util.List;
 
 public class FunctionDefinition extends AbstractDefinition{
     private List<Statement> stList;
+    private int localsSize;
 
     public FunctionDefinition(int line, int column, String name, Type type, List<Statement> stList) {
         super(line, column, name, type);
@@ -17,6 +18,14 @@ public class FunctionDefinition extends AbstractDefinition{
 
     public List<Statement> getStList() {
         return new ArrayList<Statement>(stList);
+    }
+
+    public int getLocalsSize() {
+        return localsSize;
+    }
+
+    public void setLocalsSize(int localsSize) {
+        this.localsSize = localsSize;
     }
 
     @Override

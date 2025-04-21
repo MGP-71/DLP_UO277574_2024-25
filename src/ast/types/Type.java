@@ -2,6 +2,8 @@ package ast.types;
 
 import ast.ASTNode;
 import ast.Locatable;
+import codegenerator.CodeGenerator;
+
 import java.util.List;
 
 public interface Type extends ASTNode {
@@ -20,4 +22,6 @@ public interface Type extends ASTNode {
 
     int numberOfBytes();
     char suffix();
+
+    void convertTo(CodeGenerator cg, Type type);
 }

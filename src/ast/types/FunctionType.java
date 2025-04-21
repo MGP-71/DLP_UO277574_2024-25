@@ -11,6 +11,7 @@ import java.util.List;
 public class FunctionType extends AbstractType{
     private Type returnType;
     private List<VariableDefinition> variableDefinitions;
+    private int paramsSize;
 
     public FunctionType(Type returnType, List<VariableDefinition> variableDefinitions) {
         this.returnType = returnType;
@@ -23,6 +24,14 @@ public class FunctionType extends AbstractType{
 
     public List<VariableDefinition> getVariableDefinitions() {
         return new ArrayList<VariableDefinition>(variableDefinitions);
+    }
+
+    public int getParamsSize() {
+        return paramsSize;
+    }
+
+    public void setParamsSize(int paramsSize) {
+        this.paramsSize = paramsSize;
     }
 
     @Override

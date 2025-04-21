@@ -9,7 +9,6 @@ public class CodeGenerator {
     private String inputFile;
     private String outputFile;
     private PrintWriter out;
-    private int label = 0;
 
     public CodeGenerator(String outputFile, String inputFile) {
         try {
@@ -170,13 +169,13 @@ public class CodeGenerator {
         out.flush();
     }
 
-    public void jmp(String condLabel) {
-        out.println("\tjmp\t" + condLabel);
+    public void jmp(String condition) {
+        out.println("\tjmp\t" + condition);
         out.flush();
     }
 
-    public void jz(String exitLabel) {
-        out.println("\tjz\t" + exitLabel);
+    public void jz(String exit) {
+        out.println("\tjz\t" + exit);
         out.flush();
     }
 
@@ -208,9 +207,5 @@ public class CodeGenerator {
     public void write(String s) {
         out.println(s);
         out.flush();
-    }
-
-    public String nextLabel() {
-        return "label" + this.label++;
     }
 }

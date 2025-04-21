@@ -7,6 +7,9 @@ import ast.program.VariableDefinition;
 import ast.statements.*;
 import ast.types.FunctionType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ExecuteCGVisitor extends AbstractCGVisitor<Void, Void> {
     private ValueCGVisitor valueVisitor;
     private AddressCGVisitor addressVisitor;
@@ -26,14 +29,29 @@ public class ExecuteCGVisitor extends AbstractCGVisitor<Void, Void> {
         <Local variables>
         for(VarDefinition var : varDefinition*)
             execute[[var]]
-        <enter > type.sumBytes
+        <enter > type.localVarSize
         for(Statement smt : smt*)
             execute[[smt]]
-        <ret 0, funcDef.sumBytes, param.type.numOfBytes)
+        <ret funcDef.returnTypeSize, funcDef.localVarsSize, funcDef.paramsSize)
      */
     @Override
     public Void visit(FunctionDefinition e, Void param) {
-        return super.visit(e, param);
+        cg.line(e.getLine());
+        cg.write("\n " + e.getName() + ": ");
+        e.getType().accept(this, null);
+        cg.addComment("Local variables");
+
+        for(Statement st : e.getStList())
+            st.accept(this, param);
+
+        cg.enter(e.getLocalsSize());
+
+        int bytesReturn = ((FunctionType) e.getType()).getReturnType().numberOfBytes();
+
+        if (bytesReturn == 0)
+            cg.ret(bytesReturn, e.getLocalsSize(), ((FunctionType) e.getType()).getParamsSize());
+
+        return null;
     }
 
     /*
@@ -87,6 +105,7 @@ public class ExecuteCGVisitor extends AbstractCGVisitor<Void, Void> {
      */
     @Override
     public Void visit(Assignment e, Void param) {
+        cg.line(e.getLine());
         e.getExp1().accept(addressVisitor, null);
         e.getExp2().accept(valueVisitor, null);
         cg.store(e.getExp1().getType().suffix());
@@ -141,6 +160,8 @@ public class ExecuteCGVisitor extends AbstractCGVisitor<Void, Void> {
         cg.addComment("Write");
         e.getExp().accept(valueVisitor, null);
         cg.out(e.getExp().getType().suffix());
+
+        return null;
     }
 
     /*

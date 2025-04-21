@@ -27,6 +27,7 @@ public class OffSetVisitor extends AbstractVisitor<Void, Void> {
                 ((VariableDefinition) st).setOffset(-1*localsByteSum);
             }
         }
+        e.setLocalsSize(localsByteSum);
         return null;
     }
 
@@ -48,6 +49,7 @@ public class OffSetVisitor extends AbstractVisitor<Void, Void> {
             e.getVariableDefinitions().get(i).setOffset(4+paramsByteSum);
             paramsByteSum += e.getVariableDefinitions().get(i).getType().numberOfBytes();
         }
+        e.setParamsSize(paramsByteSum);
         return null;
     }
 
