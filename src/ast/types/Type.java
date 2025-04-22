@@ -22,6 +22,4 @@ public interface Type extends ASTNode {
 
     int numberOfBytes();
     char suffix();
-
-    void convertTo(CodeGenerator cg, Type type);
 }

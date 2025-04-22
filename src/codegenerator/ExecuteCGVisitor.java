@@ -41,10 +41,11 @@ public class ExecuteCGVisitor extends AbstractCGVisitor<Void, Void> {
         e.getType().accept(this, null);
         cg.addComment("Local variables");
 
+        cg.enter(e.getLocalsSize());
+
         for(Statement st : e.getStList())
             st.accept(this, param);
 
-        cg.enter(e.getLocalsSize());
 
         int bytesReturn = ((FunctionType) e.getType()).getReturnType().numberOfBytes();
 
@@ -106,6 +107,7 @@ public class ExecuteCGVisitor extends AbstractCGVisitor<Void, Void> {
     @Override
     public Void visit(Assignment e, Void param) {
         cg.line(e.getLine());
+        cg.addComment("Assignment");
         e.getExp1().accept(addressVisitor, null);
         e.getExp2().accept(valueVisitor, null);
         cg.store(e.getExp1().getType().suffix());
@@ -117,9 +119,43 @@ public class ExecuteCGVisitor extends AbstractCGVisitor<Void, Void> {
         return super.visit(e, param);
     }
 
+    /*
+    execute[[IfElse: statement1 -> expression statement2* statement3*]] =
+        value[[expression]]
+        String else = codeGenerator.nextLabel();
+        String end = codeGenerator.nextLabel();
+        <jz > else
+        statement2*.forEach(stmt -> execute[[stmt]])
+        <jmp > end
+        else <:>
+        statement3*.forEach(stmt -> execute[[stmt]])
+        end <:>
+     */
     @Override
     public Void visit(IfElse e, Void param) {
-        return super.visit(e, param);
+        cg.addComment("If");
+        cg.line(e.getLine());
+        e.getExpression().accept(valueVisitor, null);
+
+        String elseBody = cg.nextLabel();
+        String end = cg.nextLabel();
+
+        cg.jz(elseBody);
+
+        cg.addComment("If body");
+        for(Statement statement : e.getIfSt())
+            statement.accept(this, param);
+
+        cg.jmp(end);
+
+        cg.write(" " + elseBody + ":");
+        cg.addComment("else body");
+        for(Statement statement : e.getElseIf())
+            statement.accept(this, param);
+
+        cg.write(" " + end + ":");
+
+        return null;
     }
 
     /*
@@ -144,9 +180,38 @@ public class ExecuteCGVisitor extends AbstractCGVisitor<Void, Void> {
         return super.visit(e, param);
     }
 
+    /*
+    execute[[WhileStmt: statement ⟶ expression statement*]] =
+        String condition = cg.nextLabel();
+        String end = cg.nextLabel();
+        condition<:>
+        value[[expression]]
+        <jz > end
+        statement*.forEach(stmt -> execute[[stmt]])
+        <jmp > condition
+        end<:>
+     */
     @Override
     public Void visit(While e, Void param) {
-        return super.visit(e, param);
+        cg.addComment("While");
+        cg.line(e.getLine());
+
+        String condition = cg.nextLabel();
+        String end = cg.nextLabel();
+
+        cg.write(" " + condition + ":");
+        e.getExp().accept(valueVisitor, null);
+        cg.jz(end);
+
+        cg.addComment("While body");
+        for(Statement statement : e.getStList())
+            statement.accept(this, param);
+
+        cg.jmp(condition);
+
+        cg.write(" " + end + ":");
+
+        return null;
     }
 
     /*

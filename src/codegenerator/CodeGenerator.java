@@ -1,6 +1,10 @@
 package codegenerator;
 
+import ast.types.CharacterType;
+import ast.types.DoubleType;
+import ast.types.IntegerType;
 import ast.types.Type;
+import com.sun.jdi.CharType;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -9,6 +13,7 @@ public class CodeGenerator {
     private String inputFile;
     private String outputFile;
     private PrintWriter out;
+    private int label = 0;
 
     public CodeGenerator(String outputFile, String inputFile) {
         try {
@@ -206,6 +211,36 @@ public class CodeGenerator {
 
     public void write(String s) {
         out.println(s);
+        out.flush();
+    }
+
+    public String nextLabel() {
+        return "label" + this.label++;
+    }
+
+    public void convertTo(Type type1, Type type2){
+        if (type1.suffix() == type2.suffix())
+            return;
+        if (type1 instanceof IntegerType) {
+            if (type2 instanceof DoubleType)
+                i2f();
+            else if (type2 instanceof CharacterType)
+                i2b();
+        } else if (type1 instanceof DoubleType) {
+            if(type2 instanceof CharType) {
+                f2i();
+                i2b();
+            } else if(type2 instanceof IntegerType){
+                f2i();
+            }
+        } else if (type1 instanceof CharacterType) {
+            if(type2 instanceof DoubleType) {
+                b2i();
+                i2f();
+            }
+            else if(type2 instanceof IntegerType)
+                b2i();
+        }
         out.flush();
     }
 }

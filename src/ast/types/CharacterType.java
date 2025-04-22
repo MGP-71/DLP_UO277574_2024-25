@@ -26,6 +26,8 @@ public class CharacterType extends AbstractType{
         return new ErrorType(l, "Cannot do arithmetic operation with types character and " + type);
     }
 
+
+
     @Override
     public Type arithmetic(Locatable l) {
         return new IntegerType();
@@ -65,13 +67,4 @@ public class CharacterType extends AbstractType{
         return 'b';
     }
 
-    @Override
-    public void convertTo(CodeGenerator codeGenerator, Type type){
-        if(type instanceof DoubleType) {
-            codeGenerator.b2i();
-            codeGenerator.i2f();
-        }
-        else if(type instanceof IntegerType)
-            codeGenerator.b2i();
-    }
 }

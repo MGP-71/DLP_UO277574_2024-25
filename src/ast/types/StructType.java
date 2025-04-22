@@ -36,6 +36,14 @@ public class StructType extends AbstractType{
         }
     }
 
+    public Field getField(String inputField) {
+        for (Field f: fieldList) {
+            if (f.getName().equals(inputField))
+                return f;
+        }
+        return null;
+    }
+
     @Override
     public String toString() {
         StringBuilder aux = new StringBuilder();
@@ -71,4 +79,6 @@ public class StructType extends AbstractType{
         }
         return total;
     }
+
+
 }

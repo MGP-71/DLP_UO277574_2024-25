@@ -48,20 +48,46 @@ public class ValueCGVisitor extends AbstractCGVisitor<Void, Void>{
         return null;
     }
 
+
+    /*
+    value[[ArrayAccess: exp1 ⟶ exp2 exp3]] =
+        address[[exp1]]
+        <load > exp1.type.suffix()
+     */
     @Override
     public Void visit(ArrayAccess e, Void param) {
+        e.accept(addressVisitor, param);
+        cg.load(e.getType());
+
         return null;
     }
 
     /*
     value[[Cast: exp1 ⟶ type exp2]]
         value[[exp2]]
-        exp2.type.convertTo(exp1.type)
+        --the next instructions can be encapsulated in a method convertTo in CodeGeneration--
+        if (exp2.type.suffix == 'f')
+            if (type.suffix == 'b')
+                f2i
+                i2b
+            else if (type.suffix == 'i')
+                f2i
+        else if (exp2.type.suffix == 'b')
+            if (type.suffix == 'f')
+                b2i
+                i2f
+            else if (type.suffix == 'i')
+                b2i
+        else if (exp2.type.suffix == 'i')
+            if (type.suffix == 'f')
+                i2f
+            else if (type.suffix == 'b')
+                i2b
      */
     @Override
     public Void visit(Cast e, Void param) {
         e.getExp().accept(this, null);
-        e.getExp().getType().convertTo(cg, e.getType());
+        cg.convertTo(e.getExp().getType(), e.getType());
 
         return null;
     }
@@ -131,9 +157,17 @@ public class ValueCGVisitor extends AbstractCGVisitor<Void, Void>{
         return null;
     }
 
+    /*
+    value[[FieldAccess: exp1 ⟶ exp2 ID]] =
+        address[[exp1]];
+        <load > exp1.type.suffix()
+     */
     @Override
     public Void visit(FieldAccess e, Void param) {
-        return super.visit(e, param);
+        e.accept(addressVisitor, param);
+        cg.load(e.getType());
+
+        return null;
     }
 
     /*

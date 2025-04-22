@@ -94,9 +94,4 @@ public abstract class AbstractType extends AbstractASTNode implements Type {
     public char suffix() {
         throw new IllegalStateException();
     }
-
-    @Override
-    public void convertTo(CodeGenerator cg, Type type){
-        throw new IllegalStateException();
-    }
 }

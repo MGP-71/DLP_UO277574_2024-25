@@ -82,11 +82,4 @@ public class IntegerType extends AbstractType{
         return 'i';
     }
 
-    @Override
-    public void convertTo(CodeGenerator codeGenerator, Type type){
-        if(type instanceof DoubleType)
-            codeGenerator.i2f();
-        else if(type instanceof CharacterType)
-            codeGenerator.i2b();
-    }
 }
