@@ -3,6 +3,7 @@ package codegenerator;
 import ast.expressions.*;
 import ast.statements.FunctionInvocation;
 import ast.types.DoubleType;
+import ast.types.FunctionType;
 import ast.types.IntegerType;
 import ast.types.Type;
 
@@ -14,7 +15,7 @@ public class ValueCGVisitor extends AbstractCGVisitor<Void, Void>{
     }
 
     /*
-    value[[Arithmetic: expression1 ⟶ expression2 (+|-|*|/) expression3]] =
+    value[[Arithmetic: expression1 -> expression2 (+|-|*|/) expression3]] =
         value[[expression2]]
         value[[expression3]]
         switch (expression1.operator) {
@@ -31,8 +32,8 @@ public class ValueCGVisitor extends AbstractCGVisitor<Void, Void>{
      */
     @Override
     public Void visit(Arithmetic e, Void param) {
-        e.getExp1().accept(this, null);
-        e.getExp2().accept(this, null);
+        e.getExp1().accept(this, param);
+        e.getExp2().accept(this, param);
 
         switch (e.getOperator()){
             case "+":
@@ -54,7 +55,7 @@ public class ValueCGVisitor extends AbstractCGVisitor<Void, Void>{
 
 
     /*
-    value[[ArrayAccess: exp1 ⟶ exp2 exp3]] =
+    value[[ArrayAccess: exp1 -> exp2 exp3]] =
         address[[exp1]]
         <load > exp1.type.suffix()
      */
@@ -67,7 +68,7 @@ public class ValueCGVisitor extends AbstractCGVisitor<Void, Void>{
     }
 
     /*
-    value[[Cast: exp1 ⟶ type exp2]]
+    value[[Cast: exp1 -> type exp2]]
         value[[exp2]]
         --the next instructions can be encapsulated in a method convertTo in CodeGeneration--
         if (exp2.type.suffix == 'f')
@@ -90,14 +91,14 @@ public class ValueCGVisitor extends AbstractCGVisitor<Void, Void>{
      */
     @Override
     public Void visit(Cast e, Void param) {
-        e.getExp().accept(this, null);
+        e.getExp().accept(this, param);
         cg.convertTo(e.getExp().getType(), e.getType());
 
         return null;
     }
 
     /*
-    value[[CharacterLiteral: exp ⟶ CharacterType]]:
+    value[[CharacterLiteral: exp -> CharacterType]]:
         <pushb > (Integer) exp.value
      */
     @Override
@@ -108,7 +109,7 @@ public class ValueCGVisitor extends AbstractCGVisitor<Void, Void>{
     }
 
     /*
-    value[[Comparison: expression1 ⟶ expression2 ( > | < | >= | <= | == | != ) expression3]] =
+    value[[Comparison: expression1 -> expression2 ( > | < | >= | <= | == | != ) expression3]] =
         value[[expression2]]
         value[[expression3]]
         switch (operator) {
@@ -128,8 +129,8 @@ public class ValueCGVisitor extends AbstractCGVisitor<Void, Void>{
      */
     @Override
     public Void visit(Comparison e, Void param) {
-        e.getExp1().accept(this, null);
-        e.getExp2().accept(this, null);
+        e.getExp1().accept(this, param);
+        e.getExp2().accept(this, param);
 
         switch (e.getOperator()) {
             case ">": cg.gt(e.getType().suffix());
@@ -151,7 +152,7 @@ public class ValueCGVisitor extends AbstractCGVisitor<Void, Void>{
     }
 
     /*
-    value[[DoubleLiteral: exp ⟶ DoubleType]]:
+    value[[DoubleLiteral: exp -> DoubleType]]:
         <pushf > exp.value
      */
     @Override
@@ -162,7 +163,7 @@ public class ValueCGVisitor extends AbstractCGVisitor<Void, Void>{
     }
 
     /*
-    value[[FieldAccess: exp1 ⟶ exp2 ID]] =
+    value[[FieldAccess: exp1 -> exp2 ID]] =
         address[[exp1]];
         <load > exp1.type.suffix()
      */
@@ -175,7 +176,7 @@ public class ValueCGVisitor extends AbstractCGVisitor<Void, Void>{
     }
 
     /*
-    value[[IntegerLiteral: exp ⟶ IntegerType]]:
+    value[[IntegerLiteral: exp -> IntegerType]]:
         <pushi > exp.value
      */
     @Override
@@ -186,7 +187,7 @@ public class ValueCGVisitor extends AbstractCGVisitor<Void, Void>{
     }
 
     /*
-    value[[Logical: expression1 ⟶ expression2 (&& | ||) expression3]] =
+    value[[Logical: expression1 -> expression2 (&& | ||) expression3]] =
         value[[expression2]]
         value[[expression3]]
         switch (expression1.operator){
@@ -199,8 +200,8 @@ public class ValueCGVisitor extends AbstractCGVisitor<Void, Void>{
      */
     @Override
     public Void visit(Logical e, Void param) {
-        e.getExp1().accept(this, null);
-        e.getExp2().accept(this, null);
+        e.getExp1().accept(this, param);
+        e.getExp2().accept(this, param);
         switch(e.getOperator()){
             case "&&":
                 cg.and(); break;
@@ -214,7 +215,7 @@ public class ValueCGVisitor extends AbstractCGVisitor<Void, Void>{
     }
 
     /*
-    value[[UnaryMinus: exp1 ⟶ exp2]] =
+    value[[UnaryMinus: exp1 -> exp2]] =
         value[[exp1]]
         <push> exp1.type.suffix -1
         <mul> expression1.suffix
@@ -233,7 +234,7 @@ public class ValueCGVisitor extends AbstractCGVisitor<Void, Void>{
     }
 
     /*
-    value[[UnaryNot: exp1 ⟶ exp2]] =
+    value[[UnaryNot: exp1 -> exp2]] =
         value[[exp1]]
         <not>
     */
@@ -246,21 +247,31 @@ public class ValueCGVisitor extends AbstractCGVisitor<Void, Void>{
     }
 
     /*
-    value[[Variable: exp ⟶ ID]] =
+    value[[Variable: exp -> ID]] =
         address[[exp]]
         load suffix
      */
     @Override
     public Void visit(Variable e, Void param) {
-        e.accept(addressVisitor, null);
+        e.accept(addressVisitor, param);
         cg.load(e.getLinkedDef().getType());
 
         return null;
     }
 
+    /*
+    value[[[[FunctionInvocation: exp -> exp exp*]]
+	    exp*.forEach(e -> value[[e]])
+	    <call > exp.name
+     */
     @Override
     public Void visit(FunctionInvocation e, Void param) {
-        return super.visit(e, param);
+        cg.line(e.getLine());
+        for(Expression exp: e.getListExp())
+            exp.accept(this, param);
+        cg.call(e.getVariableName().getName());
+
+        return null;
     }
 
     public AddressCGVisitor getAddressVisitor() {

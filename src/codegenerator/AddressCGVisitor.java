@@ -15,7 +15,7 @@ public class AddressCGVisitor extends AbstractCGVisitor<Void, Void> {
     }
 
     /*
-     address[[ArrayAccess: exp1 ⟶ exp2 exp3]] =
+     address[[ArrayAccess: exp1 -> exp2 exp3]] =
         address[[exp2]]
         value[[exp3]]
         <pushi > exp1.type.numberOfBytes()
@@ -35,14 +35,14 @@ public class AddressCGVisitor extends AbstractCGVisitor<Void, Void> {
     }
 
     /*
-     address[[FieldAccess: exp1 ⟶ exp2 ID]] =
+     address[[FieldAccess: exp1 -> exp2 ID]] =
         address[[exp2]]
         <pushi > expression2.type.getField(ID).offset
         <addi>
      */
     @Override
     public Void visit(FieldAccess e, Void param) {
-        e.getExp().accept(this, null);
+        e.getExp().accept(this, param);
         cg.push(((StructType)e.getExp().getType()).getField(e.getField()).getOffset());
         cg.addi();
 
@@ -50,7 +50,7 @@ public class AddressCGVisitor extends AbstractCGVisitor<Void, Void> {
     }
 
     /*
-    address[[Variable: exp ⟶ ID]] =
+    address[[Variable: exp -> ID]] =
     if(exp.def.scope == 0)
         <pusha > exp.definition.offset
         else {
