@@ -43,6 +43,10 @@ public class ValueCGVisitor extends AbstractCGVisitor<Void, Void>{
                 cg.mul(e.getType()); break;
             case "/":
                 cg.div(e.getType()); break;
+            case "%":
+                cg.mod(e.getType()); break;
+            default:
+                throw new IllegalStateException("Operator not allowed: " + e.getOperator());
         }
 
         return null;
@@ -202,6 +206,8 @@ public class ValueCGVisitor extends AbstractCGVisitor<Void, Void>{
                 cg.and(); break;
             case "||":
                 cg.or(); break;
+            default:
+                throw new IllegalStateException("Operator not allowed: " + e.getOperator());
         }
 
         return null;

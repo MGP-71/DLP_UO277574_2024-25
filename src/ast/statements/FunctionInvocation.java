@@ -18,7 +18,7 @@ public class FunctionInvocation extends AbstractExpression implements Statement 
         this.listExp = new ArrayList<Expression>(listExp);
     }
 
-    public Variable getName() {
+    public Variable getVariableName() {
         return name;
     }
 
@@ -29,7 +29,7 @@ public class FunctionInvocation extends AbstractExpression implements Statement 
     @Override
     public String toString() {
         StringBuilder aux = new StringBuilder();
-        aux.append(getName()).append(" (");
+        aux.append(getVariableName()).append(" (");
         int cnt = 0;
         for (Expression lxp: listExp) {
             aux.append(lxp.toString());

@@ -118,7 +118,7 @@ public class AbstractVisitor<TP, TR> implements Visitor<TP, TR> {
         for(Expression exp: e.getListExp()) {
             exp.accept(this, param);
         }
-        e.getName().accept(this, param);
+        e.getVariableName().accept(this, param);
         return null;
     }
 

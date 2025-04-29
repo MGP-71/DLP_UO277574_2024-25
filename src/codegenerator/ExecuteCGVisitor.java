@@ -1,14 +1,13 @@
 package codegenerator;
 
+import ast.expressions.Expression;
 import ast.program.Definition;
 import ast.program.FunctionDefinition;
 import ast.program.Program;
 import ast.program.VariableDefinition;
 import ast.statements.*;
 import ast.types.FunctionType;
-
-import java.util.ArrayList;
-import java.util.List;
+import ast.types.VoidType;
 
 public class ExecuteCGVisitor extends AbstractCGVisitor<Void, Void> {
     private ValueCGVisitor valueVisitor;
@@ -41,11 +40,15 @@ public class ExecuteCGVisitor extends AbstractCGVisitor<Void, Void> {
         e.getType().accept(this, null);
         cg.addComment("Local variables");
 
+        for (Statement st: e.getStList())
+            if (st instanceof VariableDefinition)
+                st.accept(this, null);
+
         cg.enter(e.getLocalsSize());
 
         for(Statement st : e.getStList())
-            st.accept(this, param);
-
+            if (!(st instanceof VariableDefinition))
+                st.accept(this, param);
 
         int bytesReturn = ((FunctionType) e.getType()).getReturnType().numberOfBytes();
 
@@ -61,10 +64,8 @@ public class ExecuteCGVisitor extends AbstractCGVisitor<Void, Void> {
     for(Definition def : definition*)
         if(def instanceof VarDefinition)
             execute[[def]]
-
     <call main>
     <halt>
-
     for(Definition def : definition*)
         if(def instanceof FunctionDefinition)
             execute[[def]]
@@ -111,12 +112,13 @@ public class ExecuteCGVisitor extends AbstractCGVisitor<Void, Void> {
         e.getExp1().accept(addressVisitor, null);
         e.getExp2().accept(valueVisitor, null);
         cg.store(e.getExp1().getType().suffix());
+        
         return null;
     }
 
     @Override
     public Void visit(FunctionInvocation e, Void param) {
-        return super.visit(e, param);
+        return null;
     }
 
     /*
@@ -177,7 +179,7 @@ public class ExecuteCGVisitor extends AbstractCGVisitor<Void, Void> {
 
     @Override
     public Void visit(Return e, Void param) {
-        return super.visit(e, param);
+        return null;
     }
 
     /*

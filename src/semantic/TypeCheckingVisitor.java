@@ -137,8 +137,8 @@ public class TypeCheckingVisitor extends AbstractVisitor<Type, Boolean> {
         for (Expression exp : e.getListExp()) {
             exp.accept(this, param);
         }
-        e.getName().accept(this, param);
-        e.setType(e.getName().getType().parenthesis(
+        e.getVariableName().accept(this, param);
+        e.setType(e.getVariableName().getType().parenthesis(
                 e.getListExp().stream().map(Expression::getType).collect(Collectors.toList()), e));
         e.setLValue(false);
         return null;

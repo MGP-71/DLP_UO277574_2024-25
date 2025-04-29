@@ -48,10 +48,13 @@ public class StructType extends AbstractType{
     public String toString() {
         StringBuilder aux = new StringBuilder();
         aux.append("struct {");
-        aux.append("\n");
+        int size = fieldList.size();
+        int count = 0;
         for (Field f: fieldList) {
+            count++;
             aux.append(f.toString());
-            aux.append("\n");
+            if (count != size)
+                aux.append(", ");
         }
         aux.append("}");
         return aux.toString();
